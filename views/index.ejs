@@ -3,13 +3,31 @@
 
     <div class="blogs-content">
         <h2>Visos pamokos</h2>
-        <% if(blogs.length > 0) { %>
-            <% blogs.forEach(blog => { %>
-                <h3 class="title"><%= blog.title %></h3>
-                <p class="santrauka"><%= blog.santrauka %></p>
-            <% }) %>
+        <% if(blogs && blogs.length > 0) { %>
+            <div class="blogs-grid">
+                <% blogs.forEach(blog => { %>
+                    <div class="blog-card">
+                        <div class="blog-card-content">
+                            <h3 class="title">
+                                <a href="/blogs/<%= blog.id %>" class="blog-link">
+                                    <%= blog.title %>
+                                </a>
+                            </h3>
+                            <p class="santrauka"><%= blog.santrauka %></p>
+                            <div class="blog-card-footer">
+                                <a href="/blogs/<%= blog.id %>" class="read-more">
+                                    Skaityti daugiau →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
         <% } else { %>
-            <p><strong>Nėra jokių pamokų.</strong></p>
+            <div class="no-blogs">
+                <p><strong>Nėra jokių pamokų.</strong></p>
+                <a href="/blogs/create-blog" class="create-first-blog">Sukurti pirmą pamoką</a>
+            </div>
         <% } %>
     </div>
 
