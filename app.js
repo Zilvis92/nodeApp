@@ -22,7 +22,7 @@ app.get('/apie', (req, res) => {
 });
 
 app.get('/blogs/create-blog', (req, res) => {
-    res.render('create-blog', {title: 'Kurti pamoka'});
+    res.render('create-blog', {title: 'Kurti pamoką'});
 });
 
 app.use(express.static(__dirname));
