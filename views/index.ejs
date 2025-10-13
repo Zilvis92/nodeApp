@@ -1,24 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> | Mano tinklarastis</title>
-</head>
-<body>
-    <nav>
-        <div class="site-title">
-            <a href="/"><h1>Mano tinklarastis</h1></a>
-            <p>Fullstack pamokos</p>
-        </div>
-        <ul>
-            <li><a href="/">Pamokos</a></li>
-            <li><a href="/apie">Apie</a></li>
-            <li><a href="/blogs/create-blog">Nauja pamoka</a></li>
-        </ul>
-    </nav>
+<%- include('./partials/head.ejs') %>
+<%- include('./partials/nav.ejs') %>
+
     <div class="blogs-content">
         <h2>Visos pamokos</h2>
+        <% if(blogs.length > 0) { %>
+            <% blogs.forEach(blog => { %>
+                <h3 class="title"><%= blog.title %></h3>
+                <p class="santrauka"><%= blog.santrauka %></p>
+            <% }) %>
+        <% } else { %>
+            <p><strong>Nėra jokių pamokų.</strong></p>
+        <% } %>
     </div>
-</body>
-</html>
+
+<%- include('./partials/footer.ejs') %>
