@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Pirmoji pamoka",
+    "santrauka": "Tai yra pirmoji pamoka apie Node.js",
+    "body": "Šioje pamokoje sužinosite apie Node.js pagrindus. Node.js yra JavaScript vykdymo aplinka, kuri leidžia rašyti serverio pusės programas naudojant JavaScript kalbą. Ši platforma yra pastatyta ant Chrome V8 JavaScript variklio ir yra labai populiari dėl savo greičio ir efektyvumo.",
+    "date": "2024-01-15"
+  },
+  {
+    "id": 2,
+    "title": "Antroji pamoka",
+    "santrauka": "Šioje pamokoje sužinosite apie Express.js",
+    "body": "Express.js yra minimalus ir lankstus Node.js web aplikacijų karkasas, kuris suteikia platų funkcijų rinkinį, skirtą kurti web ir mobiliesiems aplikacijoms. Jis supaprastina maršrutizavimą, middleware naudojimą ir HTTP užklausų apdorojimą.",
+    "date": "2024-01-16"
+  },
+  {
+    "id": 3,
+    "title": "Trečioji pamoka",
+    "santrauka": "Ši pamoka skirta EJS šablonų varikliui",
+    "body": "EJS (Embedded JavaScript) yra šablonų variklis, kuris leidžia generuoti HTML puslapius naudojant JavaScript kodą. Tai leidžia dinamiškai kurti turinį ir lengvai integruoti duomenis į HTML. EJS yra lengvai suprantamas ir naudojamas, ypač pradedantiesiems.",
+    "date": "2024-01-17"
+  },
+  {
+    "id": 4,
+    "title": "Ketvirtoji pamoka",
+    "santrauka": "Šioje pamokoje aptarsime duomenų bazes",
+    "body": "Duomenų bazės yra struktūrizuotos duomenų saugojimo sistemos, kurios leidžia efektyviai saugoti, tvarkyti ir pasiekti duomenis. Node.js dažnai naudojamas su MongoDB, MySQL ar PostgreSQL duomenų bazėmis.",
+    "date": "2024-01-18"
+  }
+]

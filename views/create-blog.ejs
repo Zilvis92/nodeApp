@@ -1,16 +1,30 @@
 <%- include('./partials/head.ejs') %>
 <%- include('./partials/nav.ejs') %>
 
-    <div class="create-blog-content">
-        <form>
-            <label for="title">Pamokos pavadinimas</label>
-            <input type="text" id="title" required>
-            <label for="santrauka">Santrauka</label>
-            <input type="text" id="santrauka" required>
-            <label for="body">Turinys</label>
-            <textarea id="body" required></textarea>
-            <button type="submit">Sukurti pamoką</button>
-        </form>
-    </div>
+<div class="create-blog-content">
+    <h2>Sukurti naują pamoką</h2>
+    
+    <% if (typeof error !== 'undefined') { %>
+        <div class="error-message">
+            <%= error %>
+        </div>
+    <% } %>
+    
+    <form id="blog-form" action="/blogs/create-blog" method="POST">
+        <label for="title">Pamokos pavadinimas</label>
+        <input type="text" id="title" name="title" required>
+        
+        <label for="santrauka">Santrauka</label>
+        <input type="text" id="santrauka" name="santrauka" required>
+        
+        <label for="body">Turinys</label>
+        <textarea id="body" name="body" rows="10" required></textarea>
+        
+        <button type="submit">Sukurti pamoką</button>
+    </form>
+</div>
+
+
+<script src="/js/formValidation.js"></script>
 
 <%- include('./partials/footer.ejs') %>

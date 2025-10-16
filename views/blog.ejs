@@ -9,7 +9,7 @@
                 <span><%= blog.title %></span>
             </nav>
             <h1><%= blog.title %></h1>
-            <p class="blog-meta">Sukurta: <time datetime="2024-01-01">Sausio 1, 2024</time></p>
+             <p class="blog-meta">Sukurta: <time datetime="<%= blog.date %>"><%= blog.date %></time></p>
         </header>
         
         <div class="blog-summary">
@@ -25,9 +25,14 @@
         </div>
         
         <footer class="blog-footer">
-            <a href="/" class="back-button">← Grįžti į pamokų sąrašą</a>
+            <div class="blog-actions">
+                <a href="/" class="back-button">← Grįžti į pamokų sąrašą</a>
+                <button class="delete-button" data-blog-id="<%= blog.id %>">Ištrinti pamoką</button>           
+            </div>
         </footer>
     </article>
 </div>
+
+<script src="/js/blogActions.js"></script>
 
 <%- include('./partials/footer.ejs') %>
