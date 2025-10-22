@@ -12,7 +12,7 @@ async function deleteBlog(blogId) {
             const result = await response.json();
             
             if (result.success) {
-                alert('Pamoka sėkmingai ištrinta!');
+                alert('Naujiena sėkmingai ištrinta!');
                 window.location.href = '/';
             } else {
                 alert('Klaida: ' + result.message);

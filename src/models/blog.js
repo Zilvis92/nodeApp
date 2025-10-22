@@ -18,7 +18,8 @@ const blogSchema = new mongoose.Schema({
         default: Date.now
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    collection: 'naujienos'
 });
 
 module.exports = mongoose.model('naujienos', blogSchema);

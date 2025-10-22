@@ -14,73 +14,51 @@ exports.getAboutPage = (req, res) => {
 };
 
 exports.getCreateBlogPage = (req, res) => {
-    res.render('create-blog', { title: 'Kurti pamoką' });
+    res.render('create-blog', { title: 'Kurti naujiena' });
 };
 
-exports.getBlogById = async (req, res) => {
-    try {
-        const blog = await blogService.getBlogById(req.params.id);
-        
+exports.getBlogById = (req, res) => {
+    blogService.getBlogById(req.params.id).then(blog => {
         if (blog) {
             res.render('blog', { 
                 title: blog.title, 
-                blog: {
-                    ...blog._doc,
-                    date: blog.formattedDate
-                }
+                blog: blog
             });
         } else {
-            res.status(404).render('404', { title: 'Pamoka nerasta' });
+            res.status(404).render('404', { title: 'Naujiena nerasta' });
         }
-    } catch (error) {
-        console.error('Error getting blog by id:', error);
-        res.status(500).render('error', { title: 'Klaida' });
-    }
+    });
 };
 
-exports.createBlog = async (req, res) => {
-    try {
-        const { title, santrauka, body } = req.body;
-        
-        // Validacija
-        if (!title || !santrauka || !body) {
-            return res.status(400).render('create-blog', { 
-                title: 'Kurti pamoką', 
-                error: 'Visi laukai yra privalomi!' 
-            });
-        }
-        
-        const newBlog = await blogService.createBlog({ title, santrauka, body });
-        
+exports.createBlog = (req, res) => {
+    const { title, santrauka, body } = req.body;
+    
+    // Paprasta validacija
+    if (!title || !santrauka || !body) {
+        return res.render('create-blog', { 
+            title: 'Kurti naujiena', 
+            error: 'Visi laukai yra privalomi!' 
+        });
+    }
+    
+    blogService.createBlog({ title, santrauka, body }).then(newBlog => {
         if (newBlog) {
             res.redirect('/');
         } else {
-            res.status(500).render('create-blog', { 
-                title: 'Kurti pamoką', 
-                error: 'Įvyko klaida išsaugant pamoką!' 
+            res.render('create-blog', { 
+                title: 'Kurti naujiena', 
+                error: 'Įvyko klaida išsaugant naujiena!' 
             });
         }
-    } catch (error) {
-        console.error('Error creating blog:', error);
-        res.status(500).render('create-blog', { 
-            title: 'Kurti pamoką', 
-            error: 'Įvyko klaida!' 
-        });
-    }
+    });
 };
 
-exports.deleteBlog = async (req, res) => {
-    try {
-        const blogId = parseInt(req.params.id);
-        const success = await blogService.deleteBlog(blogId);
-        
+exports.deleteBlog = (req, res) => {
+    blogService.deleteBlog(req.params.id).then(success => {
         if (success) {
-            res.json({ success: true, message: 'Pamoka sėkmingai ištrinta' });
+            res.json({ success: true, message: 'Naujiena sėkmingai ištrinta' });
         } else {
-            res.status(404).json({ success: false, message: 'Pamoka nerasta' });
+            res.status(404).json({ success: false, message: 'Naujiena nerasta' });
         }
-    } catch (error) {
-        console.error('Error deleting blog:', error);
-        res.status(500).json({ success: false, message: 'Klaida ištrinant pamoką' });
-    }
+    });
 };
