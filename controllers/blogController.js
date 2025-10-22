@@ -1,14 +1,13 @@
 const blogService = require('../services/blogService');
 
-exports.getHomePage = async (req, res) => {
-    try {
-        const blogs = await blogService.getAllBlogs();
-        res.render('index', { title: 'Pamokos', blogs });
-    } catch (error) {
-        console.error('Error getting home page:', error);
-        res.status(500).render('error', { title: 'Klaida' });
-    }
-};
+exports.getAllBlogs = async (req, res) => {
+    blogService.getAllBlogs().then(blogs => {
+        res.render('index', { 
+            title: 'Naujienos', 
+            blogs: blogs,
+        });
+    });
+}
 
 exports.getAboutPage = (req, res) => {
     res.render('apie', { title: 'Apie' });
@@ -20,11 +19,16 @@ exports.getCreateBlogPage = (req, res) => {
 
 exports.getBlogById = async (req, res) => {
     try {
-        const blogId = parseInt(req.params.id);
-        const blog = await blogService.getBlogById(blogId);
+        const blog = await blogService.getBlogById(req.params.id);
         
         if (blog) {
-            res.render('blog', { title: blog.title, blog });
+            res.render('blog', { 
+                title: blog.title, 
+                blog: {
+                    ...blog._doc,
+                    date: blog.formattedDate
+                }
+            });
         } else {
             res.status(404).render('404', { title: 'Pamoka nerasta' });
         }

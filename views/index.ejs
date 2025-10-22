@@ -3,7 +3,7 @@
 
     <div class="blogs-content">
         <h2>Visos pamokos</h2>
-        <% if(blogs && blogs.length > 0) { %>
+        <% if(typeof blogs != 'undefined' && blogs.length > 0) { %>
             <div class="blogs-grid">
                 <% blogs.forEach(blog => { %>
                     <div class="blog-card">

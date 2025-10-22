@@ -1,60 +1,58 @@
-const fs = require('fs').promises;
-const path = require('path');
-
-const BLOGS_FILE = path.join(__dirname, '..', 'data', 'blogs.json');
-
+const mongoose = require('mongoose');
+const Blog = require('../src/models/blog');
 class BlogService {
     async getAllBlogs() {
         try {
-            const data = await fs.readFile(BLOGS_FILE, 'utf8');
-            return JSON.parse(data);
+            const blogs = await Blog.find().sort({ date: -1 });
+            return blogs;
         } catch (error) {
-            if (error.code === 'ENOENT') {
-                // Jei failas neegzistuoja, sukuriame tuščią
-                await this.saveBlogs([]);
-                return [];
-            }
+            console.error('Error getting all blogs:', error);
             throw error;
         }
     }
 
     async getBlogById(id) {
-        const blogs = await this.getAllBlogs();
-        return blogs.find(blog => blog.id === id);
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return null;
+            }
+            
+            const blog = await Blog.findById(id);
+            return blog;
+        } catch (error) {
+            console.error('Error getting blog by id:', error);
+            throw error;
+        }
     }
 
     async createBlog(blogData) {
-        const blogs = await this.getAllBlogs();
-        const newBlog = {
-            id: blogs.length > 0 ? Math.max(...blogs.map(b => b.id)) + 1 : 1,
-            title: blogData.title,
-            santrauka: blogData.santrauka,
-            body: blogData.body,
-            date: new Date().toISOString().split('T')[0]
-        };
-        
-        blogs.push(newBlog);
-        await this.saveBlogs(blogs);
-        return newBlog;
+        try {
+            const newBlog = new Blog({
+                title: blogData.title,
+                santrauka: blogData.santrauka,
+                body: blogData.body
+            });
+            
+            const savedBlog = await newBlog.save();
+            return savedBlog;
+        } catch (error) {
+            console.error('Error creating blog:', error);
+            throw error;
+        }
     }
 
     async deleteBlog(id) {
-        const blogs = await this.getAllBlogs();
-        const blogIndex = blogs.findIndex(blog => blog.id === id);
-        
-        if (blogIndex !== -1) {
-            blogs.splice(blogIndex, 1);
-            await this.saveBlogs(blogs);
-            return true;
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return false;
+            }
+            
+            const result = await Blog.findByIdAndDelete(id);
+            return result !== null;
+        } catch (error) {
+            console.error('Error deleting blog:', error);
+            throw error;
         }
-        return false;
-    }
-
-    async saveBlogs(blogs) {
-        // Įsitikiname, kad data direktorija egzistuoja
-        const dataDir = path.dirname(BLOGS_FILE);
-        await fs.mkdir(dataDir, { recursive: true });
-        await fs.writeFile(BLOGS_FILE, JSON.stringify(blogs, null, 2));
     }
 }
 

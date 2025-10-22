@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
+const connectDB = require('./config/database');
 const blogRoutes = require('./routes/blogRoutes');
+
+connectDB();
 
 const app = express();
 
@@ -30,10 +33,10 @@ app.use((req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).render('error', { 
-        title: 'Klaida', 
-        error: process.env.NODE_ENV === 'development' ? err : {} 
-    });
+    // res.status(500).render('error', { 
+    //     title: 'Klaida', 
+    //     error: process.env.NODE_ENV === 'development' ? err : {} 
+    // });
 });
 
 const PORT = process.env.PORT || 3001;
