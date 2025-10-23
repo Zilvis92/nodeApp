@@ -1,18 +1,5 @@
 const blogService = require('../services/blogService');
 
-exports.getAllBlogs = async (req, res) => {
-    blogService.getAllBlogs().then(blogs => {
-        res.render('index', { 
-            title: 'Naujienos', 
-            blogs: blogs,
-        });
-    });
-}
-
-exports.getAboutPage = (req, res) => {
-    res.render('apie', { title: 'Apie' });
-};
-
 exports.getCreateBlogPage = (req, res) => {
     res.render('create-blog', { title: 'Kurti naujiena' });
 };
