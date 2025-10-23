@@ -2,7 +2,9 @@
 <%- include('./partials/nav.ejs') %>
 
     <div class="not-found-content">
-        404 - Puslapis nerastas!
-    </div> 
+        <h1><%= title %></h1>
+        <p><%= typeof message !== 'undefined' ? message : 'Pageidaujamas puslapis nerastas.' %></p>
+        <a href="/" class="back-button">← Grįžti į pagrindinį puslapį</a>
+    </div>
 
 <%- include('./partials/footer.ejs') %>
