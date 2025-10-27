@@ -2,7 +2,7 @@
 <%- include('./partials/nav.ejs') %>
 
 <div class="create-blog-content">
-    <h2>Sukurti naują pamoką</h2>
+    <h2><%= editing ? 'Redaguoti naujieną' : 'Sukurti naują naujieną' %></h2>
     
     <% if (typeof error !== 'undefined') { %>
         <div class="error-message">
@@ -10,20 +10,26 @@
         </div>
     <% } %>
     
-    <form id="blog-form" action="/blogs/create-blog" method="POST">
-        <label for="title">Pamokos pavadinimas</label>
-        <input type="text" id="title" name="title" required>
+    <form id="blog-form" action="<%= editing ? `/blogs/edit/${blog._id}` : '/blogs/create-blog' %>" method="POST">
+        <label for="title">Naujienos pavadinimas</label>
+        <input type="text" id="title" name="title" value="<%= blog ? blog.title : '' %>" required>
         
         <label for="santrauka">Santrauka</label>
-        <input type="text" id="santrauka" name="santrauka" required>
+        <input type="text" id="santrauka" name="santrauka" value="<%= blog ? blog.santrauka : '' %>" required>
         
         <label for="body">Turinys</label>
-        <textarea id="body" name="body" rows="10" required></textarea>
+        <textarea id="body" name="body" rows="10" required><%= blog ? blog.body : '' %></textarea>
         
-        <button type="submit">Sukurti pamoką</button>
+        <div class="form-actions">
+            <button type="submit"><%= editing ? 'Atnaujinti naujieną' : 'Sukurti naujieną' %></button>
+            <% if (editing) { %>
+                <a href="/blogs/<%= blog._id %>" class="cancel-button">Atšaukti</a>
+            <% } else { %>
+                <a href="/" class="cancel-button">Atšaukti</a>
+            <% } %>
+        </div>
     </form>
 </div>
-
 
 <script src="/js/formValidation.js"></script>
 

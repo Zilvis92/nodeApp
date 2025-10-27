@@ -4,8 +4,17 @@ const Blog = require('../src/models/blog');
 
 class BlogService {
     getAllBlogs() {
-        return Blog.find().sort({ date: -1 })
-            .then(blogs => blogs)
+        return Blog.find().sort()
+            .then(blogs => {
+                return blogs.filter(blog => 
+                    blog.title && 
+                    blog.santrauka && 
+                    blog.body &&
+                    blog.title.trim() !== '' &&
+                    blog.santrauka.trim() !== '' &&
+                    blog.body.trim() !== ''
+                );
+            })
             .catch(error => {
                 console.error('Error getting all blogs:', error);
                 throw error;
@@ -18,7 +27,12 @@ class BlogService {
         }
         
         return Blog.findById(id)
-            .then(blog => blog)
+            .then(blog => {
+                if (blog && blog.title && blog.santrauka && blog.body) {
+                    return blog;
+                }
+                return null;
+            })
             .catch(error => {
                 console.error('Error getting blog by id:', error);
                 throw error;
@@ -36,6 +50,26 @@ class BlogService {
             .then(savedBlog => savedBlog)
             .catch(error => {
                 console.error('Error creating blog:', error);
+                throw error;
+            });
+    }
+
+    updateBlog(id, blogData) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return Promise.resolve(null);
+        }
+        
+        return Blog.findByIdAndUpdate(id,
+            {
+                title: blogData.title,
+                santrauka: blogData.santrauka,
+                body: blogData.body,
+                updatedAt: new Date()
+            },
+            { new: true })
+            .then(updatedBlog => updatedBlog)
+            .catch(error => {
+                console.error('Error updating blog:', error);
                 throw error;
             });
     }

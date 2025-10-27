@@ -5,11 +5,16 @@
     <article class="blog-article">
         <header class="blog-header">
             <nav class="breadcrumb">
-                <a href="/">Pamokos</a>
+                <a href="/">Naujienos</a>
                 <span><%= blog.title %></span>
             </nav>
             <h1><%= blog.title %></h1>
-             <p class="blog-meta">Sukurta: <time datetime="<%= blog.date %>"><%= blog.date %></time></p>
+            <p class="blog-meta">
+                Sukurta: <time datetime="<%= blog.date %>"><%= new Date(blog.date).toLocaleDateString('lt-LT') %></time>
+                <% if (blog.updatedAt && blog.updatedAt > blog.date) { %>
+                    | Atnaujinta: <time datetime="<%= blog.updatedAt %>"><%= new Date(blog.updatedAt).toLocaleDateString('lt-LT') %></time>
+                <% } %>
+            </p>
         </header>
         
         <div class="blog-summary">
@@ -18,7 +23,7 @@
         </div>
         
         <div class="blog-body">
-            <h3>Pamokos turinys</h3>
+            <h3>Naujienos turinys</h3>
             <div class="blog-content">
                 <%= blog.body %>
             </div>
@@ -26,8 +31,11 @@
         
         <footer class="blog-footer">
             <div class="blog-actions">
-                <a href="/" class="back-button">← Grįžti į pamokų sąrašą</a>
-                <button class="delete-button" data-blog-id="<%= blog.id %>">Ištrinti pamoką</button>           
+                <a href="/" class="back-button">← Grįžti į naujienų sąrašą</a>
+                <div class="action-buttons">
+                    <a href="/blogs/edit/<%= blog.id %>" class="edit-button">Redaguoti naujieną</a>
+                    <button class="delete-button" data-blog-id="<%= blog.id %>">Ištrinti naujieną</button>
+                </div>
             </div>
         </footer>
     </article>
