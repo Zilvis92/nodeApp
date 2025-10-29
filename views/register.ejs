@@ -1,0 +1,27 @@
+<%- include('./partials/head.ejs') %>
+<%- include('./partials/nav.ejs') %>
+
+    <div class="">
+        <h2>Registracijos puslapis</h2>
+        <form action="/register" method="post">
+            <div class="">
+                <label for="firstName">Vardas</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="">
+                <label for="lastName">Pavardė</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div class="">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+            <div class="">
+                <label for="password">Slaptažodis</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="">Registracija</button>
+        </form>
+    </div>
+
+<%- include('./partials/footer.ejs') %>

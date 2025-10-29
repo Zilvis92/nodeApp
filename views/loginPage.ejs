@@ -1,0 +1,19 @@
+<%- include('./partials/head.ejs') %>
+<%- include('./partials/nav.ejs') %>
+
+    <div class="">
+        <h2>Prisijungimo puslapis</h2>
+        <form action="/loginPage" method="POST">
+            <div>
+                <label for="">Email</label>
+                <input type="email" name="email" placeholder="Įveskite savo el. paštą" required>
+            </div>
+            <div>
+                <label for="">Slaptažodis</label>
+                <input type="password" name="password" placeholder="Įveskite savo slaptažodį" required>
+            </div>
+            <button type="submit">Prisijungti</button>
+        </form>
+    </div>
+
+<%- include('./partials/footer.ejs') %>
