@@ -15,13 +15,16 @@ router.get('/blogs/create-blog', blogController.getCreateBlogPage);
 router.get('/blogs/edit/:id', blogController.getEditBlogPage);
 router.get('/blogs/:id', blogController.getBlogById);
 
-// Login and Register routes
+// Auth routes
 router.get('/loginPage', authController.getLoginPage);
 router.get('/register', authController.getRegisterPage);
+router.get('/logout', authController.logout);
 
 // POST routes
 router.post('/blogs/create-blog', blogController.createBlog);
 router.post('/blogs/edit/:id', blogController.updateBlog);
+router.post('/register', authController.register);
+router.post('/loginPage', authController.login);
 
 // DELETE routes
 router.delete('/blogs/:id', blogController.deleteBlog);

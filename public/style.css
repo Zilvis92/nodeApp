@@ -652,3 +652,21 @@ nav ul {
         justify-content: center;
     }
 }
+
+/* Success messages */
+.success-message {
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    border: 1px solid #a7f3d0;
+    text-align: center;
+}
+
+/* Navigation user info */
+nav ul li span {
+    color: var(--primary-color);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+}

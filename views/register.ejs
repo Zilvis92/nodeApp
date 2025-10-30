@@ -1,30 +1,55 @@
 <%- include('./partials/head.ejs') %>
 <%- include('./partials/nav.ejs') %>
 
-    <div class="auth-content">
-        <h2>Registracijos puslapis</h2>
-        <form action="/register" method="post" class="auth-form">
-            <div class="form-group">
-                <label for="firstName">Vardas</label>
-                <input type="text" id="firstName" name="firstName" required>
-            </div>
-            <div class="form-group">
-                <label for="lastName">Pavardė</label>
-                <input type="text" id="lastName" name="lastName" required>
-            </div>
-            <div class="form-group">
-                <label for="email">El. paštas</label>
-                <input type="text" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Slaptažodis</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="auth-button">Registracija</button>
-            <div class="auth-link">
-                <p>Jau turite paskyrą? <a href="/loginPage">Prisijunkite čia</a></p>
-            </div>
-        </form>
-    </div>
+<div class="auth-content">
+    <h2>Registracija</h2>
+    
+    <% if (typeof error !== 'undefined') { %>
+        <div class="error-message">
+            <%= error %>
+        </div>
+    <% } %>
+    
+    <% if (typeof success !== 'undefined') { %>
+        <div class="success-message">
+            <%= success %>
+        </div>
+    <% } %>
+    
+    <form action="/register" method="post" class="auth-form">
+        <div class="form-group">
+            <label for="firstName">Vardas</label>
+            <input type="text" id="firstName" name="firstName" 
+                   value="<%= typeof formData !== 'undefined' ? formData.firstName : '' %>" 
+                   placeholder="Įveskite savo vardą" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="lastName">Pavardė</label>
+            <input type="text" id="lastName" name="lastName" 
+                   value="<%= typeof formData !== 'undefined' ? formData.lastName : '' %>" 
+                   placeholder="Įveskite savo pavardę" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">El. paštas</label>
+            <input type="email" id="email" name="email" 
+                   value="<%= typeof formData !== 'undefined' ? formData.email : '' %>" 
+                   placeholder="Įveskite savo el. paštą" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Slaptažodis</label>
+            <input type="password" id="password" name="password" 
+                   placeholder="Sukurkite slaptažodį (min. 6 simboliai)" required>
+        </div>
+        
+        <button type="submit" class="auth-button">Registruotis</button>
+        
+        <div class="auth-link">
+            <p>Jau turite paskyrą? <a href="/loginPage">Prisijunkite čia</a></p>
+        </div>
+    </form>
+</div>
 
 <%- include('./partials/footer.ejs') %>
