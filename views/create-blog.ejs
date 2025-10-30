@@ -2,7 +2,7 @@
 <%- include('./partials/nav.ejs') %>
 
 <div class="create-blog-content">
-    <h2><%= editing ? 'Redaguoti naujieną' : 'Sukurti naują naujieną' %></h2>
+    <h2><%= typeof editing !== 'undefined' && editing ? 'Redaguoti naujieną' : 'Sukurti naują naujieną' %></h2>
     
     <% if (typeof error !== 'undefined') { %>
         <div class="error-message">

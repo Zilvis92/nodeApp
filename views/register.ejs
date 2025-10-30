@@ -1,26 +1,29 @@
 <%- include('./partials/head.ejs') %>
 <%- include('./partials/nav.ejs') %>
 
-    <div class="">
+    <div class="auth-content">
         <h2>Registracijos puslapis</h2>
-        <form action="/register" method="post">
-            <div class="">
+        <form action="/register" method="post" class="auth-form">
+            <div class="form-group">
                 <label for="firstName">Vardas</label>
                 <input type="text" id="firstName" name="firstName" required>
             </div>
-            <div class="">
+            <div class="form-group">
                 <label for="lastName">Pavardė</label>
                 <input type="text" id="lastName" name="lastName" required>
             </div>
-            <div class="">
-                <label for="email">Email</label>
+            <div class="form-group">
+                <label for="email">El. paštas</label>
                 <input type="text" id="email" name="email" required>
             </div>
-            <div class="">
+            <div class="form-group">
                 <label for="password">Slaptažodis</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit" class="">Registracija</button>
+            <button type="submit" class="auth-button">Registracija</button>
+            <div class="auth-link">
+                <p>Jau turite paskyrą? <a href="/loginPage">Prisijunkite čia</a></p>
+            </div>
         </form>
     </div>
 

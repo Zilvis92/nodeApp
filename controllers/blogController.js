@@ -1,7 +1,12 @@
 const blogService = require('../services/blogService');
+const blog = require('../src/models/blog');
 
 exports.getCreateBlogPage = (req, res) => {
-    res.render('create-blog', { title: 'Kurti naujiena' });
+    res.render('create-blog', { 
+        title: 'Kurti naujiena',
+        editing: false,
+        blog: null 
+    });
 };
 
 exports.getBlogById = (req, res) => {
@@ -23,7 +28,9 @@ exports.createBlog = (req, res) => {
     // Paprasta validacija
     if (!title || !santrauka || !body) {
         return res.render('create-blog', { 
-            title: 'Kurti naujiena', 
+            title: 'Kurti naujiena',
+            editing: false,
+            blog: { title, santrauka, body }, 
             error: 'Visi laukai yra privalomi!' 
         });
     }
@@ -33,7 +40,9 @@ exports.createBlog = (req, res) => {
             res.redirect('/');
         } else {
             res.render('create-blog', { 
-                title: 'Kurti naujiena', 
+                title: 'Kurti naujiena',
+                editing: false,
+                blog: { title, santrauka, body }, 
                 error: 'Įvyko klaida išsaugant naujiena!' 
             });
         }
