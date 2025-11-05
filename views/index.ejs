@@ -2,6 +2,17 @@
 <%- include('./partials/nav.ejs') %>
 
     <div class="blogs-content">
+        <% if (typeof success !== 'undefined') { %>
+        <div class="success-message">
+            <%= success %>
+        </div>
+        <% } %>
+        
+        <% if (typeof message !== 'undefined') { %>
+            <div class="message">
+                <%= message %>
+            </div>
+        <% } %>
         <h2>Visos naujienos</h2>
         <% if(typeof blogs != 'undefined' && blogs.length > 0) { %>
             <div class="blogs-grid">

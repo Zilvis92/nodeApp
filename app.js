@@ -1,11 +1,28 @@
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
 const connectDB = require('./config/database');
 const blogRoutes = require('./routes/blogRoutes');
 
-// connectDB();
-
 const app = express();
+
+// Session middleware
+app.use(session({
+    secret: 'your-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        secure: false, // nustatyti true jei naudojate HTTPS
+        maxAge: 24 * 60 * 60 * 1000 // 24 valandos
+    }
+}));
+
+
+// Middleware, kuris perduoda user duomenis į visus views
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
 
 // Middleware
 app.use(express.static('public'));
@@ -40,10 +57,6 @@ app.use((err, req, res, next) => {
         title: 'Serverio klaida',
         message: 'Atsiprašome, įvyko serverio klaida. Bandykite vėliau.'
     });
-    // res.status(500).render('error', { 
-    //     title: 'Klaida', 
-    //     error: process.env.NODE_ENV === 'development' ? err : {} 
-    // });
 });
 
 // Pirmiausia prisijungiame prie DB, tada paleidžiame serverį

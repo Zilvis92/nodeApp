@@ -5,9 +5,14 @@
     <ul>
         <li><a href="/">Naujienos</a></li>
         <li><a href="/apie">Apie</a></li>
-        <li><a href="/blogs/create-blog">Kurti naujieną</a></li>
-        <% if (typeof user !== 'undefined' && user) { %>
-            <li><span>Sveiki, <%= user.firstName %>!</span></li>
+        <% if (user) { %>
+            <li><a href="/blogs/create-blog">Kurti naujieną</a></li>
+            <li class="user-info">
+                <span class="user-avatar">
+                    <%= user.firstName.charAt(0) %><%= user.lastName.charAt(0) %>
+                </span>
+                <span class="user-name">Sveiki, <%= user.firstName %>!</span>
+            </li>
             <li><a href="/logout">Atsijungti</a></li>
         <% } else { %>
             <li><a href="/loginPage">Prisijungti</a></li>

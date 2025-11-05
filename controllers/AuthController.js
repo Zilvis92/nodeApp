@@ -1,22 +1,39 @@
-const User = require('../src/models/User');  // Pridėk šią eilutę
+const User = require('../src/models/User');
+
 class AuthController {
     getLoginPage(req, res) {
+        if (req.session.user) {
+            return res.redirect('/');
+        }
+        
         res.render('loginPage', { 
             title: 'Prisijungti',
-            error: req.query.error 
+            error: req.query.error,
+            success: req.query.success
         });
     }
 
     getRegisterPage(req, res) {
+        if (req.session.user) {
+            return res.redirect('/');
+        }
+        
         res.render('register', { 
             title: 'Registruotis',
-            error: req.query.error 
+            error: req.query.error,
+            success: req.query.success
         });
     }
 
     // POST /register
     async register(req, res) {
         try {
+            // Jei jau prisijungęs, nukreipiame į pagrindinį puslapį
+            if (req.session.user) {
+                return res.redirect('/');
+            }
+
+            console.log('Registracijos bandymas:', req.body);
             const { firstName, lastName, email, password } = req.body;
 
             // Validacija
@@ -37,7 +54,7 @@ class AuthController {
             }
 
             // Tikriname ar vartotojas jau egzistuoja
-            const existingUser = await User.findOne({ email });
+            const existingUser = await User.findOne({ email: email.toLowerCase() });
             if (existingUser) {
                 return res.render('register', {
                     title: 'Registruotis',
@@ -48,16 +65,24 @@ class AuthController {
 
             // Sukuriame naują vartotoją
             const newUser = new User({
-                firstName,
-                lastName,
-                email,
+                firstName: firstName.trim(),
+                lastName: lastName.trim(),
+                email: email.toLowerCase().trim(),
                 password
             });
 
             await newUser.save();
+            console.log('Naujas vartotojas sukurtas:', newUser.email);
 
-            // Po sėkmingos registracijos nukreipiame į prisijungimą
-            res.redirect('/loginPage?success=Registracija sėkminga! Galite prisijungti.');
+            // Automatiškai prisijungiame po registracijos
+            req.session.user = {
+                id: newUser._id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email
+            };
+
+            res.redirect('/?success=Registracija sėkminga! Esate prisijungęs.');
 
         } catch (error) {
             console.error('Registracijos klaida:', error);
@@ -82,7 +107,13 @@ class AuthController {
     // POST /loginPage
     async login(req, res) {
         try {
+            // Jei jau prisijungęs, nukreipiame į pagrindinį puslapį
+            if (req.session.user) {
+                return res.redirect('/');
+            }
+
             const { email, password } = req.body;
+            console.log('Prisijungimo bandymas:', email);
 
             // Validacija
             if (!email || !password) {
@@ -94,8 +125,9 @@ class AuthController {
             }
 
             // Randame vartotoją
-            const user = await User.findOne({ email });
+            const user = await User.findOne({ email: email.toLowerCase() });
             if (!user) {
+                console.log('Vartotojas nerastas:', email);
                 return res.render('loginPage', {
                     title: 'Prisijungti',
                     error: 'Neteisingas el. paštas arba slaptažodis!',
@@ -106,6 +138,7 @@ class AuthController {
             // Tikriname slaptažodį
             const isPasswordValid = await user.comparePassword(password);
             if (!isPasswordValid) {
+                console.log('Neteisingas slaptažodis vartotojui:', email);
                 return res.render('loginPage', {
                     title: 'Prisijungti',
                     error: 'Neteisingas el. paštas arba slaptažodis!',
@@ -113,10 +146,15 @@ class AuthController {
                 });
             }
 
-            // Čia galėtumėte pridėti sesijos valdymą
-            // req.session.userId = user._id;
-            
-            // Laikinas sprendimas - nukreipiame į pagrindinį puslapį
+            // Išsaugome vartotojo duomenis sesijoje
+            req.session.user = {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email
+            };
+
+            console.log('Sėkmingas prisijungimas:', email);
             res.redirect('/?success=Sėkmingai prisijungėte!');
 
         } catch (error) {
@@ -131,9 +169,12 @@ class AuthController {
 
     // GET /logout
     logout(req, res) {
-        // Čia galėtumėte sunaikinti sesiją
-        // req.session.destroy();
-        res.redirect('/?message=Sėkmingai atsijungėte');
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Klaida atsijungiant:', err);
+            }
+            res.redirect('/?message=Sėkmingai atsijungėte');
+        });
     }
 }
 
