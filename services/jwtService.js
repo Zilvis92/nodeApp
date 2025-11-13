@@ -1,22 +1,24 @@
 const jwt = require('jsonwebtoken');
-const jwtConfig = require('../config/jwtConfig');
+const Config = require('../config/Config');
 
 class JwtService {
     // Generuoti JWT token
     generateToken(payload) {
-        return jwt.sign(payload, jwtConfig.secret, {
-            expiresIn: jwtConfig.expiresIn,
-            issuer: jwtConfig.issuer,
-            audience: jwtConfig.audience
+        return jwt.sign(payload, Config.secret, {
+            // user ID isideti kai atsikirinesiu frontend nuo backend
+            expiresIn: Config.expiresIn,
+            issuer: Config.issuer,
+            audience: Config.audience
         });
     }
 
     // Tikrinti JWT token
     verifyToken(token) {
         try {
-            return jwt.verify(token, jwtConfig.secret, {
-                issuer: jwtConfig.issuer,
-                audience: jwtConfig.audience
+            return jwt.verify(token, Config.secret, {
+                // user ID isideti
+                issuer: Config.issuer,
+                audience: Config.audience
             });
         } catch (error) {
             throw new Error('Invalid or expired token');
@@ -32,7 +34,6 @@ class JwtService {
     generateUserToken(user) {
         const payload = {
             userId: user._id,
-            email: user.email,
             firstName: user.firstName,
             lastName: user.lastName
         };

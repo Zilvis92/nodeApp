@@ -1,3 +1,4 @@
+const { decode } = require('jsonwebtoken');
 const jwtService = require('../services/jwtService');
 
 // Middleware JWT token patikrinimui
@@ -16,7 +17,11 @@ const authenticateToken = (req, res, next) => {
 
     try {
         const decoded = jwtService.verifyToken(token);
-        req.user = decoded;
+        req.user = {
+            id: decoded.userId,
+            firstName: decoded.firstName,
+            lastName: decoded.lastName
+        };
         next();
     } catch (error) {
         return res.status(403).json({ error: 'Invalid or expired token' });
@@ -37,16 +42,19 @@ const authViewMiddleware = (req, res, next) => {
 
     if (token) {
         try {
+            // pasidebuginti kas yra viduje
             const decoded = jwtService.verifyToken(token);
             res.locals.user = {
                 id: decoded.userId,
                 firstName: decoded.firstName,
                 lastName: decoded.lastName,
-                email: decoded.email
             };
         } catch (error) {
             // Token nevalidus, tęsiame be user
+            res.locals.user = null;
         }
+    } else {
+        res.locals.user = null;
     }
 
     next();

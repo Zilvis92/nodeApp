@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
@@ -9,23 +10,14 @@ const app = express();
 
 // Session middleware
 app.use(session({
-    secret: 'your-secret-key-change-in-production',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        secure: false, // nustatyti true jei naudojate HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // 24 valandos
+        secure: false,
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
-
-// Auth middleware for views
-app.use(authViewMiddleware);
-
-// Middleware, kuris perduoda user duomenis į visus views
-app.use((req, res, next) => {
-    res.locals.user = req.session.user || null;
-    next();
-});
 
 // Middleware
 app.use(express.static('public'));
@@ -37,6 +29,9 @@ app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
 });
+
+// // Auth middleware for views
+app.use(authViewMiddleware);
 
 // EJS konfigūracija
 app.set('view engine', 'ejs');
