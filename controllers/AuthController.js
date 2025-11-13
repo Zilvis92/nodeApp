@@ -1,4 +1,5 @@
 const User = require('../src/models/User');
+const jwtService = require('../services/jwtService');
 
 class AuthController {
     getLoginPage(req, res) {
@@ -74,13 +75,24 @@ class AuthController {
             await newUser.save();
             console.log('Naujas vartotojas sukurtas:', newUser.email);
 
+            // Generuojame JWT token
+            const token = jwtService.generateUserToken(newUser);
+
             // Automatiškai prisijungiame po registracijos
             req.session.user = {
                 id: newUser._id,
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
-                email: newUser.email
+                email: newUser.email,
+                token: token
             };
+
+            // Galime grąžinti token ir kaip cookie arba response
+            res.cookie('auth_token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 24 * 60 * 60 * 1000 // 24 valandos
+            });
 
             res.redirect('/?success=Registracija sėkminga! Esate prisijungęs.');
 
@@ -146,15 +158,41 @@ class AuthController {
                 });
             }
 
+            // Generuojame JWT token
+            const token = jwtService.generateUserToken(user);
+
             // Išsaugome vartotojo duomenis sesijoje
             req.session.user = {
                 id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                email: user.email
+                email: user.email,
+                token: token
             };
 
+            // Nustatome cookie
+            res.cookie('auth_token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 24 * 60 * 60 * 1000
+            });
+
             console.log('Sėkmingas prisijungimas:', email);
+
+            // Jei API užklausa, grąžiname token
+            if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+                return res.json({
+                    success: true,
+                    token: token,
+                    user: {
+                        id: user._id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email
+                    }
+                });
+            }
+
             res.redirect('/?success=Sėkmingai prisijungėte!');
 
         } catch (error) {
@@ -173,8 +211,74 @@ class AuthController {
             if (err) {
                 console.error('Klaida atsijungiant:', err);
             }
-            res.redirect('/?message=Sėkmingai atsijungėte');
         });
+
+        // Išvalome cookie
+        res.clearCookie('auth_token');
+        res.clearCookie('connect.sid'); // Sesijos cookie
+
+        res.redirect('/?message=Sėkmingai atsijungėte');
+    }
+
+    // API endpoint token gavimui
+    async getToken(req, res) {
+        try {
+            const { email, password } = req.body;
+
+            if (!email || !password) {
+                return res.status(400).json({ error: 'El. paštas ir slaptažodis yra privalomi' });
+            }
+
+            const user = await User.findOne({ email: email.toLowerCase() });
+            if (!user) {
+                return res.status(401).json({ error: 'Neteisingas el. paštas arba slaptažodis' });
+            }
+
+            const isPasswordValid = await user.comparePassword(password);
+            if (!isPasswordValid) {
+                return res.status(401).json({ error: 'Neteisingas el. paštas arba slaptažodis' });
+            }
+
+            const token = jwtService.generateUserToken(user);
+
+            res.json({
+                success: true,
+                token: token,
+                user: {
+                    id: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email
+                }
+            });
+
+        } catch (error) {
+            console.error('Token gavimo klaida:', error);
+            res.status(500).json({ error: 'Įvyko serverio klaida' });
+        }
+    }
+
+    // Token patikrinimo endpoint
+    verifyToken(req, res) {
+        try {
+            const token = req.body.token || req.query.token;
+            
+            if (!token) {
+                return res.status(400).json({ error: 'Token yra privalomas' });
+            }
+
+            const decoded = jwtService.verifyToken(token);
+            res.json({
+                valid: true,
+                user: decoded
+            });
+
+        } catch (error) {
+            res.json({
+                valid: false,
+                error: error.message
+            });
+        }
     }
 }
 

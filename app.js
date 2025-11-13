@@ -3,6 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const connectDB = require('./config/database');
 const blogRoutes = require('./routes/blogRoutes');
+const { authViewMiddleware } = require('./middleware/authMiddleware');
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.use(session({
     }
 }));
 
+// Auth middleware for views
+app.use(authViewMiddleware);
 
 // Middleware, kuris perduoda user duomenis į visus views
 app.use((req, res, next) => {

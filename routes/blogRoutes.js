@@ -3,6 +3,7 @@ const router = express.Router();
 const pagesController = require('../controllers/pagesController');
 const blogController = require('../controllers/blogController');
 const AuthController = require('../controllers/AuthController');
+const { authenticateToken, requireAuth } = require('../middleware/authMiddleware');
 
 const authController = new AuthController();
 
@@ -19,6 +20,10 @@ router.get('/blogs/:id', blogController.getBlogById);
 router.get('/loginPage', authController.getLoginPage);
 router.get('/register', authController.getRegisterPage);
 router.get('/logout', authController.logout);
+
+// Auth API routes
+router.post('/api/auth/token', authController.getToken);
+router.post('/api/auth/verify', authController.verifyToken);
 
 // POST routes
 router.post('/blogs/create-blog', blogController.createBlog);
