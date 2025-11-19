@@ -33,12 +33,32 @@ class JwtService {
     // Generuoti token vartotojo duomenims
     generateUserToken(user) {
         const payload = {
-            userId: user._id,
+            userId: user._id.toString(),
             firstName: user.firstName,
             lastName: user.lastName
         };
         
         return this.generateToken(payload);
+    }
+
+    // Papildomas metodas: išgauti userId iš token
+    getUserIdFromToken(token) {
+        try {
+            const decoded = this.verifyToken(token);
+            return decoded.userId;
+        } catch (error) {
+            throw new Error('Cannot extract user ID from token');
+        }
+    }
+
+    // Papildomas metodas: patikrinti ar token priklauso vartotojui
+    isTokenForUser(token, userId) {
+        try {
+            const decoded = this.verifyToken(token);
+            return decoded.userId === userId.toString();
+        } catch (error) {
+            return false;
+        }
     }
 }
 
